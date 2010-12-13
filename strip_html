@@ -2,22 +2,37 @@
 <?
 $SOURCE="copy";
 $DESTINATION="stripped";
+include_once "conf.php";
+
+function process_html($file) {
+  global $SOURCE;
+  global $DESTINATION;
+
+  $dom=new DOMDocument();
+  $dom->loadHTML(file_get_contents("$SOURCE/$file"));
+
+  file_put_contents("$DESTINATION/$file", $dom->saveHTML());
+}
 
 function process_dir($src) {
   global $SOURCE;
+  global $DESTINATION;
 
   $d=opendir("$SOURCE/$src");
   while($f=readdir($d)) {
     if(($f==".")||($f=="..")) {
     }
     elseif(is_dir("$SOURCE/$src/$f")) {
+      if(!is_dir("$DESTINATION/$src/$f"))
+        mkdir("$DESTINATION/$src/$f");
+
       process_dir("$src/$f");
     }
     elseif(preg_match("/\.html$/", $f)) {
-      print "HTML $src$f\n";
+      process_html("$src/$f");
     }
     else {
-      print "OTHER $src$f\n";
+      copy("$SOURCE/$src/$f", "$DESTINATION/$src/$f");
     }
   }
   closedir($d);
