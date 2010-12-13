@@ -1,0 +1,2 @@
+SOURCE=http://www.example.com/path1
+DESTINATION=ftp://USER:PASSWD@example.mirror.com/path2

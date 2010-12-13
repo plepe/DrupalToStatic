@@ -1,0 +1,23 @@
+#!/bin/bash
+
+. conf.sh
+
+# Thanks to http://drupal.org/node/27882
+
+# Make a copy of new files in directory copy/
+wget -N --adjust-extension --cut-dirs=2 -nH --mirror -p --html-extension --base=./ -k -P copy $SOURCE
+
+# Thanks to http://blog.simlau.net/rsync-auf-einen-ftp-server.html
+
+# Mountpoint anlegen
+mkdir -p server
+ 
+# FTP Server per curlftpfs einhängen
+curlftpfs $DESTINATION server
+ 
+# delete-after sorgt dafür das alte Dateien erst nach dem Transfer
+# der neuen Dateien gelöscht werden.
+rsync -a -T /tmp --delete-after copy/ server/
+ 
+# FTP-Server unmounten
+fusermount -u server
