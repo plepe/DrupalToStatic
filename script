@@ -7,6 +7,10 @@
 # Make a copy of new files in directory copy/
 wget -N --adjust-extension --cut-dirs=2 -nH --mirror -p --html-extension --base=./ -k -P copy $SOURCE
 
+mkdir -p stripped
+
+./strip_html
+
 # Thanks to http://blog.simlau.net/rsync-auf-einen-ftp-server.html
 
 # Mountpoint anlegen
@@ -17,7 +21,7 @@ curlftpfs $DESTINATION server
  
 # delete-after sorgt dafür das alte Dateien erst nach dem Transfer
 # der neuen Dateien gelöscht werden.
-rsync -a -T /tmp --delete-after copy/ server/
+rsync -a -T /tmp --delete-after stripped/ server/
  
 # FTP-Server unmounten
 fusermount -u server
