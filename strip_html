@@ -1,0 +1,26 @@
+#!/usr/bin/php
+<?
+$SOURCE="copy";
+$DESTINATION="stripped";
+
+function process_dir($src) {
+  global $SOURCE;
+
+  $d=opendir("$SOURCE/$src");
+  while($f=readdir($d)) {
+    if(($f==".")||($f=="..")) {
+    }
+    elseif(is_dir("$SOURCE/$src/$f")) {
+      process_dir("$src/$f");
+    }
+    elseif(preg_match("/\.html$/", $f)) {
+      print "HTML $src$f\n";
+    }
+    else {
+      print "OTHER $src$f\n";
+    }
+  }
+  closedir($d);
+}
+
+process_dir("");
