@@ -4,12 +4,39 @@ $SOURCE="copy";
 $DESTINATION="stripped";
 include_once "conf.php";
 
+function process_dom($n) {
+  global $strip_ids;
+  global $strip_classes;
+
+  if(($n->hasAttributes())&&
+     (in_array($n->getAttribute("id"), $strip_ids)||
+      in_array($n->getAttribute("class"), $strip_classes))) {
+    $n->parentNode->removeChild($n);
+    return;
+  }
+
+  $c=$n->firstChild;
+  while($c) {
+    $c_next=$c->nextSibling;
+
+    process_dom($c);
+
+    $c=$c_next;
+  }
+
+  return;
+}
+
 function process_html($file) {
   global $SOURCE;
   global $DESTINATION;
 
+  print "Processing $file\n";
   $dom=new DOMDocument();
-  $dom->loadHTML(file_get_contents("$SOURCE/$file"));
+  if(!$dom->loadHTML(file_get_contents("$SOURCE/$file")))
+    return;
+
+  process_dom($dom);
 
   file_put_contents("$DESTINATION/$file", $dom->saveHTML());
 }
