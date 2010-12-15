@@ -1,5 +1,5 @@
 <?
-$SOURCE="http://www.example.com/path1";
+$SOURCE="http://www.example.com/path1/";
 $DESTINATION="ftp://USER:PASSWD@example.mirror.com/path2";
 $strip_ids=array("block-user-0");
 $strip_classes=array("submitted");
@@ -7,3 +7,7 @@ $strip_classes=array("submitted");
 $source_path="copy";
 $strip_path="stripped";
 $dest_path="server";
+
+$wget_options="-N --restrict-file-names=windows,lowercase --adjust-extension -nH --mirror -p --html-extension --base=./ -k";
+$rsync_options="-a -T /tmp --delete-after";
+$curlftp_options="";

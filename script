@@ -3,8 +3,18 @@
 include_once "conf.php";
 # Thanks to http://drupal.org/node/27882
 
+# Add a trailing slash if missing
+if(!preg_match("/\/$/", $SOURCE)) {
+  $SOURCE.="/";
+}
+if(!preg_match("/https?:\/\/[^\/]+\/(.*)$/", $SOURCE, $m)) {
+  print "Invalid URL!\n";
+  exit;
+}
+$cut_dirs=substr_count($m[1], "/");
+
 # Make a copy of new files in directory copy/
-system("wget -N --restrict-file-names=windows,lowercase --adjust-extension --cut-dirs=2 -nH --mirror -p --html-extension --base=./ -k -P $source_path $SOURCE");
+system("wget --cut-dirs=$cut_dirs $wget_options -P $source_path $SOURCE");
 
 mkdir($strip_path);
 
@@ -16,11 +26,11 @@ include "strip_html.php";
 mkdir($dest_path);
  
 # FTP Server per curlftpfs einhängen
-system("curlftpfs $DESTINATION server");
+system("curlftpfs $curlftp_options $DESTINATION server");
  
 # delete-after sorgt dafür das alte Dateien erst nach dem Transfer
 # der neuen Dateien gelöscht werden.
-system("rsync -a -T /tmp --delete-after stripped/ server/");
+system("rsync $rsync_options stripped/ server/");
  
 # FTP-Server unmounten
 system("fusermount -u server");
