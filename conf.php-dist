@@ -1,3 +1,9 @@
 <?
+$SOURCE="http://www.example.com/path1";
+$DESTINATION="ftp://USER:PASSWD@example.mirror.com/path2";
 $strip_ids=array("block-user-0");
 $strip_classes=array("submitted");
+
+$source_path="copy";
+$strip_path="stripped";
+$dest_path="server";

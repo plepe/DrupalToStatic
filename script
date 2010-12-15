@@ -1,27 +1,26 @@
-#!/bin/bash
-
-. conf.sh
-
+#!/usr/bin/php
+<?
+include_once "conf.php";
 # Thanks to http://drupal.org/node/27882
 
 # Make a copy of new files in directory copy/
-wget -N --restrict-file-names=windows,lowercase --adjust-extension --cut-dirs=2 -nH --mirror -p --html-extension --base=./ -k -P copy $SOURCE
+system("wget -N --restrict-file-names=windows,lowercase --adjust-extension --cut-dirs=2 -nH --mirror -p --html-extension --base=./ -k -P $source_path $SOURCE");
 
-mkdir -p stripped
+mkdir($strip_path);
 
-./strip_html
+include "strip_html.php";
 
 # Thanks to http://blog.simlau.net/rsync-auf-einen-ftp-server.html
 
 # Mountpoint anlegen
-mkdir -p server
+mkdir($dest_path);
  
 # FTP Server per curlftpfs einhängen
-curlftpfs $DESTINATION server
+system("curlftpfs $DESTINATION server");
  
 # delete-after sorgt dafür das alte Dateien erst nach dem Transfer
 # der neuen Dateien gelöscht werden.
-rsync -a -T /tmp --delete-after stripped/ server/
+system("rsync -a -T /tmp --delete-after stripped/ server/");
  
 # FTP-Server unmounten
-fusermount -u server
+system("fusermount -u server");

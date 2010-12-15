@@ -1,9 +1,4 @@
-#!/usr/bin/php
 <?
-$SOURCE="copy";
-$DESTINATION="stripped";
-include_once "conf.php";
-
 function process_dom($n) {
   global $strip_ids;
   global $strip_classes;
@@ -28,30 +23,30 @@ function process_dom($n) {
 }
 
 function process_html($file) {
-  global $SOURCE;
-  global $DESTINATION;
+  global $source_path;
+  global $strip_path;
 
   print "Processing $file\n";
   $dom=new DOMDocument();
-  if(!$dom->loadHTML(file_get_contents("$SOURCE/$file")))
+  if(!$dom->loadHTML(file_get_contents("$source_path/$file")))
     return;
 
   process_dom($dom);
 
-  file_put_contents("$DESTINATION/$file", $dom->saveHTML());
+  file_put_contents("$strip_path/$file", $dom->saveHTML());
 }
 
 function process_dir($src) {
-  global $SOURCE;
-  global $DESTINATION;
+  global $source_path;
+  global $strip_path;
 
-  $d=opendir("$SOURCE/$src");
+  $d=opendir("$source_path/$src");
   while($f=readdir($d)) {
     if(($f==".")||($f=="..")) {
     }
-    elseif(is_dir("$SOURCE/$src/$f")) {
-      if(!is_dir("$DESTINATION/$src/$f"))
-        mkdir("$DESTINATION/$src/$f");
+    elseif(is_dir("$source_path/$src/$f")) {
+      if(!is_dir("$strip_path/$src/$f"))
+        mkdir("$strip_path/$src/$f");
 
       process_dir("$src/$f");
     }
@@ -59,7 +54,7 @@ function process_dir($src) {
       process_html("$src/$f");
     }
     else {
-      copy("$SOURCE/$src/$f", "$DESTINATION/$src/$f");
+      copy("$source_path/$src/$f", "$strip_path/$src/$f");
     }
   }
   closedir($d);
