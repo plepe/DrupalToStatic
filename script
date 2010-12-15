@@ -5,7 +5,7 @@
 # Thanks to http://drupal.org/node/27882
 
 # Make a copy of new files in directory copy/
-wget -N --adjust-extension --cut-dirs=2 -nH --mirror -p --html-extension --base=./ -k -P copy $SOURCE
+wget -N --restrict-file-names=windows,lowercase --adjust-extension --cut-dirs=2 -nH --mirror -p --html-extension --base=./ -k -P copy $SOURCE
 
 mkdir -p stripped
 
